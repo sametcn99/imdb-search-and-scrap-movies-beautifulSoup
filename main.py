@@ -19,6 +19,7 @@ try:
         s_summary = "NA"
         s_line = "NA"
         s_poster = "NA"
+        s_runtime = "NA"
         shortened_poster_link = "NA"
         print("movie title: ")
         # Collect and parse search page
@@ -90,7 +91,14 @@ try:
             except ShorteningErrorException:
                 print("An error occurred while shortening the url")
                 shortened_poster_link = s_poster
-        movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year})" + \
+        elemnt_year_rate_runtime_ul = soup.select(
+            "div[class='TitleBlock__TitleMetaDataContainer-sc-1nlhx7j-2 hWHMKr'] > ul")
+        if len(elemnt_year_rate_runtime_ul) > 0:
+            list_items = elemnt_year_rate_runtime_ul[0].find_all("li", recursive=False)
+            list_item_length = len(list_items)
+            s_runtime = list_items[list_item_length - 1]
+            s_runtime = s_runtime.text
+        movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
                         "\n" + "⭐ Rate: " + s_rate + \
                         "\n" + "🎥 Director: " + s_director + \
                         "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
