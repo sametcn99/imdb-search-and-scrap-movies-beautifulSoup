@@ -6,12 +6,8 @@ import os
 from bs4 import BeautifulSoup
 from pyshorteners.exceptions import ShorteningErrorException
 
-line_separator = "█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒"
+line_separator = "/////////////////////////////"
 u_input: str = ""
-
-
-
-
 try:
     while True:
         name = []
@@ -114,10 +110,10 @@ try:
             except ShorteningErrorException:
                 print("An error occurred while shortening the url")
                 shortened_poster_link = s_poster
-        elemnt_year_rate_runtime_ul = soup.select(
+        element_year_rate_runtime_ul = soup.select(
             "div[class='TitleBlock__TitleMetaDataContainer-sc-1nlhx7j-2 hWHMKr'] > ul")
-        if len(elemnt_year_rate_runtime_ul) > 0:
-            list_items = elemnt_year_rate_runtime_ul[0].find_all("li", recursive=False)
+        if len(element_year_rate_runtime_ul) > 0:
+            list_items = element_year_rate_runtime_ul[0].find_all("li", recursive=False)
             list_item_length = len(list_items)
             s_runtime = list_items[list_item_length - 1]
             s_runtime = s_runtime.text
@@ -125,7 +121,7 @@ try:
                         "\n" + "⭐ Rate: " + s_rate + \
                         "\n" + "🎥 Director: " + s_director + \
                         "\n" + textwrap.fill(
-            textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=70,
+            textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=110,
                              placeholder=" Too many writers..."),
             width=70) + \
                         "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
