@@ -7,6 +7,11 @@ from bs4 import BeautifulSoup
 from pyshorteners.exceptions import ShorteningErrorException
 
 line_separator = "█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒█▒"
+u_input: str = ""
+
+
+
+
 try:
     while True:
         name = []
@@ -35,8 +40,11 @@ try:
         for i in range(len(name)):
             print(i + 1, link[i], name[i])
         # Collect and parse movie page
-        print("code: ")
-        responseDetails = requests.get(link[int(input()) - 1])
+        print("0 for search again\ncode: ")
+        u_input = input()
+        if u_input == "0":
+            os.system("python main.py")
+        responseDetails = requests.get(link[int(u_input) - 1])
         soup = BeautifulSoup(responseDetails.content, 'lxml')
         # pull movie details
         try:
@@ -57,6 +65,21 @@ try:
                 "class": "ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link"}).text
         except:
             print("Director is missing...")
+
+        try:
+            responseWriters = requests.get(responseDetails.url + "fullcredits")
+            soupWriters = BeautifulSoup(responseWriters.text, 'lxml')
+            writers = soupWriters.find_all(attrs={"class": "simpleTable simpleCreditsTable"})
+            writersCheck = []
+            writersCheck = soupWriters.find_all(id="writer")
+            if len(writersCheck) > 0:
+                writers = writers[1].text.replace(" ", "").replace("...", "").replace("\n", "")
+                # print("writers is not none" + str(writersCheck))
+            if len(writersCheck) < 1:
+                writers = "NA"
+                print("writers is missing...")
+        except:
+            pass
         try:
             s_summary = soup.find('span',
                                   attrs={"class": "GenresAndPlot__TextContainerBreakpointXL-cum89p-2 gCtawA"}).text
@@ -101,6 +124,10 @@ try:
         movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
                         "\n" + "⭐ Rate: " + s_rate + \
                         "\n" + "🎥 Director: " + s_director + \
+                        "\n" + textwrap.fill(
+            textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=70,
+                             placeholder=" Too many writers..."),
+            width=70) + \
                         "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
                         "\n" + textwrap.fill("📚 Summary: " + s_summary, width=70) + \
                         "\n" + textwrap.fill("📚 Storyline: " + s_line, width=70) + \
