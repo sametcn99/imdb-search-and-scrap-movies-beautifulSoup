@@ -156,6 +156,7 @@ if __name__ == "__main__":
         print(f"An error occured. \nHere is Error message: {e}\nRestarted program.\n")
         os.system("python test.py")
     except Exception as e:
-
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print(repr(traceback.format_tb(exc_traceback)))
         print(f"Something happened.\n{e}\nRestarted program.")
         os.system("python test.py")
