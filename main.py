@@ -1,14 +1,16 @@
+import os
 import sys
 import textwrap
+import traceback
+
 import pyshorteners
 import requests
-import os
-import sys, traceback
 from bs4 import BeautifulSoup
 from pyshorteners.exceptions import ShorteningErrorException
 
 line_separator = "/////////////////////////////"
 u_input: str = ""
+
 
 def search():
     global link
@@ -31,8 +33,9 @@ def search():
     u_input = input()
     if u_input == "0":
         os.system("python main.py")
-    #link_s.append(link[int(u_input) - 1])
+    # link_s.append(link[int(u_input) - 1])
     link = link[int(u_input) - 1]
+
 
 def collect_details():
     cast = ["NA"]
@@ -56,7 +59,8 @@ def collect_details():
         print("Name is missing...")
     try:
         s_year = soup.find('a', attrs={
-            "class": "ipc-link ipc-link--baseAlt ipc-link--inherit-color TitleBlockMetaData__StyledTextLink-sc-12ein40-1 rgaOW"}).text
+            "class": "ipc-link ipc-link--baseAlt ipc-link--inherit-color "
+                     "TitleBlockMetaData__StyledTextLink-sc-12ein40-1 rgaOW"}).text
     except:
         print("Year is missing...")
     try:
@@ -69,15 +73,15 @@ def collect_details():
     except:
         print("Director is missing...")
     try:
-        responseWriters = requests.get(response.url + "fullcredits")
-        soupWriters = BeautifulSoup(responseWriters.text, 'lxml')
-        writers = soupWriters.find_all(attrs={"class": "simpleTable simpleCreditsTable"})
-        writersCheck = []
-        writersCheck = soupWriters.find_all(id="writer")
-        if len(writersCheck) > 0:
+        response_writers = requests.get(response.url + "fullcredits")
+        soup_writers = BeautifulSoup(response_writers.text, 'lxml')
+        writers = soup_writers.find_all(attrs={"class": "simpleTable simpleCreditsTable"})
+        writers_check = []
+        writers_check = soup_writers.find_all(id="writer")
+        if len(writers_check) > 0:
             writers = writers[1].text.replace(" ", "").replace("...", "").replace("\n", "")
-            # print("writers is not none" + str(writersCheck))
-        if len(writersCheck) < 1:
+            # print("writers is not none" + str(writers_check))
+        if len(writers_check) < 1:
             writers = "NA"
             print("writers is missing...")
     except:
@@ -105,7 +109,8 @@ def collect_details():
         print("Cast is missing...")
     try:
         s_poster = soup.find('div', attrs={
-            "class": "ipc-media ipc-media--poster ipc-image-media-ratio--poster ipc-media--baseAlt ipc-media--poster-l ipc-poster__poster-image ipc-media__img"}).img[
+            "class": "ipc-media ipc-media--poster ipc-image-media-ratio--poster ipc-media--baseAlt "
+                     "ipc-media--poster-l ipc-poster__poster-image ipc-media__img"}).img[
             'src']
     except:
         print("Poster is missing...")
@@ -123,24 +128,23 @@ def collect_details():
         list_item_length = len(list_items)
         s_runtime = list_items[list_item_length - 1]
         s_runtime = s_runtime.text
-    return s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url, writersCheck
+    return s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url, writers_check
 
 
 def print_details():
-    print("print details")
     s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url, writersCheck = collect_details()
     movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
-                    "\n" + "⭐ Rate: " + s_rate + \
-                    "\n" + "🎥 Director: " + s_director + \
-                    "\n" + textwrap.fill(
-        textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=110,
-                         placeholder=" Too many writers..."),
-        width=70) + \
-                    "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
-                    "\n" + textwrap.fill("📚 Summary: " + s_summary, width=70) + \
-                    "\n" + textwrap.fill("📚 Storyline: " + s_line, width=70) + \
-                    "\n" + "📷 Movie Poster: " + shortened_poster_link + \
-                    "\n" + "🔗 IMDb Link: " + response_details_url + "\n" + line_separator
+                    "\n⭐ Rate: " + s_rate + \
+                    "\n🎥 Director: " + s_director + \
+                    textwrap.fill(
+                        textwrap.shorten("\n✏ Writers: " + ''.join(str(e) for e in writers), width=110,
+                                         placeholder=" Too many writers..."),
+                        width=70) + \
+                    textwrap.fill("\n🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
+                    textwrap.fill("\n📚 Summary: " + s_summary, width=70) + \
+                    textwrap.fill("\n📚 Storyline: " + s_line, width=70) + \
+                    "\n📷 Movie Poster: " + shortened_poster_link + \
+                    "\n🔗 IMDb Link: " + response_details_url + "\n" + line_separator
     print(movie_details)
 
 
