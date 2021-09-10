@@ -13,7 +13,7 @@ u_input: str = ""
 s_link = ""
 
 
-def search(s_link):
+def search():
     name = []
     link = []
     print("movie title: ")
@@ -49,7 +49,7 @@ def collect_details():
     s_runtime = "NA"
     shortened_poster_link = "NA"
     writers = []
-    response = requests.get(search(s_link))
+    response = requests.get(search())
     soup = BeautifulSoup(response.content, 'lxml', )
     response_details_url = response.url
     # pull movie details
