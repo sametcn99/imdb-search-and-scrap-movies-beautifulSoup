@@ -10,10 +10,10 @@ from pyshorteners.exceptions import ShorteningErrorException
 
 line_separator = "/////////////////////////////"
 u_input: str = ""
+s_link = ""
 
 
-def search():
-    global link
+def search(s_link):
     name = []
     link = []
     print("movie title: ")
@@ -33,8 +33,8 @@ def search():
     u_input = input()
     if u_input == "0":
         os.system("python main.py")
-    # link_s.append(link[int(u_input) - 1])
-    link = link[int(u_input) - 1]
+    s_link = str(link[int(u_input) - 1])
+    return s_link
 
 
 def collect_details():
@@ -49,7 +49,7 @@ def collect_details():
     s_runtime = "NA"
     shortened_poster_link = "NA"
     writers = []
-    response = requests.get(link)
+    response = requests.get(search(s_link))
     soup = BeautifulSoup(response.content, 'lxml', )
     response_details_url = response.url
     # pull movie details
@@ -128,39 +128,37 @@ def collect_details():
         list_item_length = len(list_items)
         s_runtime = list_items[list_item_length - 1]
         s_runtime = s_runtime.text
-    return s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url, writers_check
+    return s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url
 
 
 def print_details():
-    s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url, writersCheck = collect_details()
+    s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url = collect_details()
     movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
-                    "\n⭐ Rate: " + s_rate + \
-                    "\n🎥 Director: " + s_director + \
-                    textwrap.fill(
-                        textwrap.shorten("\n✏ Writers: " + ''.join(str(e) for e in writers), width=110,
-                                         placeholder=" Too many writers..."),
-                        width=70) + \
-                    textwrap.fill("\n🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
-                    textwrap.fill("\n📚 Summary: " + s_summary, width=70) + \
-                    textwrap.fill("\n📚 Storyline: " + s_line, width=70) + \
-                    "\n📷 Movie Poster: " + shortened_poster_link + \
-                    "\n🔗 IMDb Link: " + response_details_url + "\n" + line_separator
+                    "\n" + "⭐ Rate: " + s_rate + \
+                    "\n" + "🎥 Director: " + s_director + \
+                    "\n" + textwrap.fill(
+        textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=110,
+                         placeholder=" Too many writers..."),
+        width=70) + \
+                    "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
+                    "\n" + textwrap.fill("📚 Summary: " + s_summary, width=70) + \
+                    "\n" + textwrap.fill("📚 Storyline: " + s_line, width=70) + \
+                    "\n" + "📷 Movie Poster: " + shortened_poster_link + \
+                    "\n" + "🔗 IMDb Link: " + response_details_url + "\n" + line_separator
     print(movie_details)
 
 
 if __name__ == "__main__":
     try:
         while True:
-            search()
-            collect_details()
             print_details()
     except ValueError as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         print(repr(traceback.format_tb(exc_traceback)))
         print(f"An error occured. \nHere is Error message: {e}\nRestarted program.\n")
-        os.system("python main.py")
+        os.system("python test.py")
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         print(repr(traceback.format_tb(exc_traceback)))
         print(f"Something happened.\n{e}\nRestarted program.")
-        os.system("python main.py")
+        os.system("python test.py")
