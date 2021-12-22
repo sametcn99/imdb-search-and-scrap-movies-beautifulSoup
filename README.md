@@ -1,5 +1,4 @@
 # imdb-search-and-scrap-movies-beautifulSoup
-Simple project for learning Python &amp; Beautiful Soup.
 
 https://www.python.org/dev/peps/pep-0008/#function-and-method-arguments
 
