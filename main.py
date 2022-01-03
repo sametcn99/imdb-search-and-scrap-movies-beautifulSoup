@@ -1,6 +1,5 @@
 import os
 import sys
-import textwrap
 import traceback
 
 import pyshorteners
@@ -133,19 +132,19 @@ def collect_details():
 
 def print_details():
     s_name, s_year, s_runtime, s_rate, s_director, writers, cast, s_summary, s_line, shortened_poster_link, response_details_url = collect_details()
-    movie_details = line_separator + "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
+
+    movie_details = "\n🔑 Title: " + s_name + f" ({s_year}) {s_runtime}" + \
                     "\n" + "⭐ Rate: " + s_rate + \
                     "\n" + "🎥 Director: " + s_director + \
-                    "\n" + textwrap.fill(
-        textwrap.shorten("✏ Writers: " + ''.join(str(e) for e in writers), width=110,
-                         placeholder=" Too many writers..."),
-        width=70) + \
-                    "\n" + textwrap.fill("🕶 Cast: " + ''.join(str(e) + ", " for e in cast), width=70) + \
-                    "\n" + textwrap.fill("📚 Summary: " + s_summary, width=70) + \
-                    "\n" + textwrap.fill("📚 Storyline: " + s_line, width=70) + \
+                    "\n" + "✏ Writers: " + ''.join(str(e) for e in writers) + \
+                    "\n" + "🕶 Cast: " + ''.join(str(e) + ", " for e in cast) + \
+                    "\n" + "📚 Summary: " + s_summary + \
+                    "\n" + "📚 Storyline: " + s_line + \
                     "\n" + "📷 Movie Poster: " + shortened_poster_link + \
-                    "\n" + "🔗 IMDb Link: " + response_details_url + "\n" + line_separator
-    print(movie_details)
+                    "\n" + "🔗 IMDb Link: " + response_details_url + "\n"
+    print(line_separator + movie_details + line_separator)
+    with open('imdb.txt', 'a', encoding="utf-8") as f:
+        f.writelines(movie_details)
 
 
 if __name__ == "__main__":
